@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>神経衰弱 × ブラックジャック</title>
+  <link rel="stylesheet" href="game.css" />
+</head>
+<body>
+  <div class="app">
+    <header class="header">
+      <h1>神経衰弱 × ブラックジャック</h1>
+      <p class="tagline">合計21で追加ターン。22以上はめくった札を元に戻す</p>
+    </header>
+
+    <section id="setup" class="panel setup" aria-label="ゲーム開始">
+      <div class="setup-block">
+        <h2>プレイ人数</h2>
+        <label class="setup-label setup-label-inline">
+          <input type="checkbox" id="cpuOpponent" />
+          CPUと対戦する（2人固定）
+        </label>
+        <div class="setup-cpu-first hidden" id="cpuFirstWrap">
+          <div class="setup-options setup-cpu-first-options">
+            <label class="setup-label">
+              <input type="radio" name="cpuFirst" value="human" checked />
+              先攻
+            </label>
+            <label class="setup-label">
+              <input type="radio" name="cpuFirst" value="cpu" />
+              後攻
+            </label>
+            <label class="setup-label">
+              <input type="radio" name="cpuFirst" value="random" />
+              ランダム
+            </label>
+          </div>
+        </div>
+        <div class="setup-cpu-delay hidden" id="cpuDelayWrap">
+          <div class="setup-cpu-delay-row">
+            <label class="setup-delay-label" for="cpuRevealSec">CPUがめくった札を確認する時間（秒）</label>
+            <input
+              type="number"
+              id="cpuRevealSec"
+              min="0.5"
+              max="30"
+              step="0.5"
+              value="3"
+            />
+          </div>
+        </div>
+        <div class="setup-row" id="playerCountRow">
+          <button type="button" class="btn btn-ghost" data-players="2">2人</button>
+          <button type="button" class="btn btn-ghost" data-players="3">3人</button>
+          <button type="button" class="btn btn-ghost" data-players="4">4人</button>
+        </div>
+      </div>
+      <div class="setup-block">
+        <h2>勝敗の決め方</h2>
+        <div class="setup-options">
+          <label class="setup-label">
+            <input type="radio" name="winMode" value="score" checked />
+            取得した札の「数字の合計」が大きい人が勝ち
+          </label>
+          <label class="setup-label">
+            <input type="radio" name="winMode" value="cards" />
+            取得枚数が多い人が勝ち
+          </label>
+        </div>
+      </div>
+      <div class="setup-block">
+        <h2>札の数え方</h2>
+        <p class="setup-note">合計21・バスト判定、および「数字の合計」勝ちの集計に使います。</p>
+        <div class="setup-options">
+          <span class="setup-sub">絵札（J・Q・K）</span>
+          <label class="setup-label">
+            <input type="radio" name="pictureMode" value="rank" checked />
+            数字のまま（11・12・13）
+          </label>
+          <label class="setup-label">
+            <input type="radio" name="pictureMode" value="ten" />
+            すべて10として数える（ブラックジャック風）
+          </label>
+          <span class="setup-sub">エース（A）</span>
+          <label class="setup-label">
+            <input type="radio" name="aceMode" value="one" checked />
+            数字の 1 のまま
+          </label>
+          <label class="setup-label">
+            <input type="radio" name="aceMode" value="soft" />
+            1 または 11 として数え、手札の合計が最適になるようにする
+          </label>
+        </div>
+      </div>
+      <button type="button" id="btnStart" class="btn btn-primary" disabled>スタート</button>
+    </section>
+
+    <section id="playArea" class="play hidden" aria-live="polite">
+      <aside class="sidebar">
+        <div class="status card-panel status-panel">
+          <p id="turnLabel" class="turn-label"></p>
+          <p id="sessionSum" class="session-sum"></p>
+          <p id="message" class="message" role="status"></p>
+        </div>
+        <div id="playersList" class="players"></div>
+        <div class="actions card-panel">
+          <button type="button" id="btnOutcomeOk" class="btn btn-confirm btn-block hidden">確認完了</button>
+          <button type="button" id="btnStand" class="btn btn-primary" disabled>取得してターン終了</button>
+        </div>
+        <button type="button" id="btnNewGame" class="btn btn-ghost btn-block hidden" aria-hidden="true">新しいゲーム</button>
+      </aside>
+      <div class="table-wrap">
+        <div id="grid" class="grid" aria-label="場のカード"></div>
+      </div>
+    </section>
+  </div>
+  <script src="game.js"></script>
+</body>
+</html>
