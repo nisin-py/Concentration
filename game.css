@@ -7,6 +7,12 @@
   --muted: #9fb5a8;
   --card-w: 72px;
   --card-h: 104px;
+  --board-cols: 13;
+  --board-gap: 0.45rem;
+  --axis-size: 1.2rem;
+  --axis-gap: 0.35rem;
+  --board-grid-width: calc(var(--board-cols) * var(--card-w) + (var(--board-cols) - 1) * var(--board-gap));
+  --board-total-width: calc(var(--axis-size) + var(--axis-gap) + var(--board-grid-width));
   --radius: 8px;
   --shadow: 0 8px 24px rgba(0, 0, 0, 0.45);
   font-family: "Segoe UI", "Hiragino Sans", "Hiragino Kaku Gothic ProN", Meiryo, sans-serif;
@@ -26,7 +32,8 @@ body {
 }
 
 .app {
-  max-width: 1200px;
+  width: 100%;
+  max-width: calc(240px + 1rem + var(--board-total-width) + 6rem);
   margin: 0 auto;
   padding: 1rem 1rem 2rem;
 }
@@ -287,14 +294,14 @@ body {
 
 .play {
   display: flex;
-  flex-wrap: wrap;
-  gap: 1rem;
+  flex-wrap: nowrap;
+  gap: 1.25rem;
   align-items: flex-start;
 }
 
 .sidebar {
-  flex: 0 0 220px;
-  min-width: 200px;
+  flex: 0 0 240px;
+  min-width: 220px;
 }
 
 @media (max-width: 800px) {
@@ -415,27 +422,79 @@ body {
   margin-top: 0;
 }
 
+.shuffle-option {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  margin-top: 0.2rem;
+  font-size: 0.78rem;
+  color: var(--muted);
+}
+
 .table-wrap {
   flex: 1 1 auto;
   min-width: 0;
+  width: calc(var(--board-total-width) + 2.5rem);
+  max-width: 100%;
   background: linear-gradient(165deg, var(--felt) 0%, var(--felt-edge) 100%);
   border-radius: 12px;
   border: 1px solid rgba(0, 0, 0, 0.35);
   box-shadow: inset 0 0 80px rgba(0, 0, 0, 0.35), var(--shadow);
   padding: 0.75rem;
+  overflow: auto;
+}
+
+.board-axis-wrap {
+  display: grid;
+  grid-template-columns: var(--axis-size) auto;
+  grid-template-rows: var(--axis-size) auto;
+  gap: var(--axis-gap);
+  width: var(--board-total-width);
+}
+
+.axis-corner {
+  width: var(--axis-size);
+  height: var(--axis-size);
+}
+
+.axis {
+  color: rgba(232, 240, 234, 0.8);
+  font-size: 0.7rem;
+  user-select: none;
+}
+
+.axis-top {
+  display: grid;
+  gap: var(--board-gap);
+  align-items: center;
+}
+
+.axis-left {
+  display: grid;
+  gap: var(--board-gap);
+  align-items: center;
+}
+
+.axis-top span,
+.axis-left span {
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(var(--card-w), 1fr));
-  gap: 0.45rem;
+  gap: var(--board-gap);
   justify-items: center;
+  width: var(--board-grid-width);
 }
 
 .slot {
   width: var(--card-w);
   height: var(--card-h);
   perspective: 400px;
+  transform: translate(0, 0) scale(1) rotate(0deg);
+  transition: transform 0.28s ease;
 }
 
 .slot-inner {
@@ -504,4 +563,20 @@ body {
 
 .slot.busy {
   pointer-events: none;
+}
+
+.grid.shuffle-redeal .slot {
+  transition: none;
+  transform: translate(var(--shuffle-dx), var(--shuffle-dy)) scale(0.72) rotate(-8deg);
+}
+
+.grid.shuffle-redeal.shuffle-redeal-active .slot {
+  transition: transform 0.28s ease;
+  transform: translate(0, 0) scale(1) rotate(0deg);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .slot {
+    transition: none;
+  }
 }

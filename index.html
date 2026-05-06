@@ -15,10 +15,10 @@
 
     <section id="setup" class="panel setup" aria-label="ゲーム開始">
       <div class="setup-block">
-        <h2>プレイ人数</h2>
+        <h2>対戦設定</h2>
         <label class="setup-label setup-label-inline">
           <input type="checkbox" id="cpuOpponent" />
-          CPUと対戦する（2人固定）
+          CPUと対戦する
         </label>
         <div class="setup-cpu-first hidden" id="cpuFirstWrap">
           <div class="setup-options setup-cpu-first-options">
@@ -49,10 +49,18 @@
             />
           </div>
         </div>
-        <div class="setup-row" id="playerCountRow">
-          <button type="button" class="btn btn-ghost" data-players="2">2人</button>
-          <button type="button" class="btn btn-ghost" data-players="3">3人</button>
-          <button type="button" class="btn btn-ghost" data-players="4">4人</button>
+        <div class="setup-cpu-delay">
+          <div class="setup-cpu-delay-row">
+            <label class="setup-delay-label" for="secondShuffleCount">後攻プレイヤーのシャッフル回数</label>
+            <input
+              type="number"
+              id="secondShuffleCount"
+              min="0"
+              max="20"
+              step="1"
+              value="2"
+            />
+          </div>
         </div>
       </div>
       <div class="setup-block">
@@ -92,6 +100,19 @@
           </label>
         </div>
       </div>
+      <div class="setup-block">
+        <h2>バスト時の処理</h2>
+        <div class="setup-options">
+          <label class="setup-label">
+            <input type="radio" name="bustMode" value="lastBack" checked />
+            バストした札だけ戻し、それまでの札は取得する
+          </label>
+          <label class="setup-label">
+            <input type="radio" name="bustMode" value="allBack" />
+            めくった札をすべて元に戻す
+          </label>
+        </div>
+      </div>
       <button type="button" id="btnStart" class="btn btn-primary" disabled>スタート</button>
     </section>
 
@@ -105,12 +126,21 @@
         <div id="playersList" class="players"></div>
         <div class="actions card-panel">
           <button type="button" id="btnOutcomeOk" class="btn btn-confirm btn-block hidden">確認完了</button>
-          <button type="button" id="btnStand" class="btn btn-primary" disabled>取得してターン終了</button>
+          <button type="button" id="btnStand" class="btn btn-primary" disabled>ターン終了</button>
+          <label class="shuffle-option">
+            <input type="checkbox" id="chkStandShuffle" />
+            <span id="shuffleLabelText">シャッフル（残 2 回）</span>
+          </label>
         </div>
         <button type="button" id="btnNewGame" class="btn btn-ghost btn-block hidden" aria-hidden="true">新しいゲーム</button>
       </aside>
       <div class="table-wrap">
-        <div id="grid" class="grid" aria-label="場のカード"></div>
+        <div class="board-axis-wrap" aria-label="場のカード座標">
+          <div class="axis-corner" aria-hidden="true"></div>
+          <div id="axisTop" class="axis axis-top" aria-hidden="true"></div>
+          <div id="axisLeft" class="axis axis-left" aria-hidden="true"></div>
+          <div id="grid" class="grid" aria-label="場のカード"></div>
+        </div>
       </div>
     </section>
   </div>
